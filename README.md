@@ -10,10 +10,11 @@
 
 ## 快速使用
 
-### 1. 编辑 CSV 服务列表
+### 1. 编辑 CSV 服务列表 和 SH 脚本中的邮箱地址
 
 - 复制 `example.com.sh` 和 `example.com.csv`，重命名为你的域名（如 `mydomain.com.sh`、`mydomain.com.csv`）。
 - 按格式填写 CSV，每行一个服务，后续字段为环境变量。
+- 更该 SH 脚本中第 6 行  `EMAIL` 的值为自己的有效邮箱，否则 SSL 证书申请可能失败
 
 ### 2. 上传脚本和 CSV 到 VPS, 如果使用 python 脚本上传的话:
 

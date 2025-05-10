@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# ===========================
+
+# 改为自己的有效邮箱
+EMAIL="example@example.com"		# For Let's Encrypt
+
+# ===========================
+
 set -euo pipefail
 
 # Ensure the script is run as root
@@ -45,7 +52,6 @@ if [ ! -f "$CSV_FILE" ]; then
 	exit 1
 fi
 
-EMAIL="example@example.com"		# For Let's Encrypt
 WEBROOT="/var/www/html"
 SITES_AVAILABLE="/etc/nginx/sites-available"
 SITES_ENABLED="/etc/nginx/sites-enabled"
@@ -211,7 +217,7 @@ systemctl restart $NAME
 echo; echo "✅ $NAME.service restarted"
 EOF
 		chmod 700 "$DIR/upgrade.sh"
-		echo; echo "✅ upgrade.sh created for $NAME"
+		echo; echo "✅ upgrade.sh created for $NAME"; echo;
 	fi
 
 	# Create systemd service
@@ -235,7 +241,6 @@ EOF
 	
 	systemctl daemon-reexec
 	systemctl daemon-reload
-	echo ""
 	systemctl enable --now "$NAME" && \
 		echo "✅ $NAME.service started" || \
 		echo "❌ Failed to start $NAME.service: check with journalctl -u $NAME"
