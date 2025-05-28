@@ -1,3 +1,4 @@
 "_GIT","DIR","SUBDOMAIN","PORT","NAME","CMD",,,
 "https://github.com/xxxx/xxxx1.git","/opt/service1","service1","1234","service1","/opt/service1/.venv/bin/python3 /opt/service1/app.py","APP_PATH=path/,"PORT=1234",
 "https://github.com/xxxx/xxxx2.git","/opt/service2","service2","1235","service2","/opt/service2/.venv/bin/python3 /opt/service2/app.py","PORT=1235","TOKEN=xxxx","PASSWARD=xxxx"
+"https://github.com/atmos/camo.git","/opt/camo","camo","8081","camo","/usr/bin/env PORT=8081 CAMO_KEY=0x24FEEDFACEDEADBEEFCAFE CAMO_KEEP_ALIVE=false /usr/bin/node /opt/camo/server.js"

@@ -15,6 +15,7 @@ PROJECTS=(
     'https://github.com/xxx/server1.git|/opt/server1|server1|1234|server1|/opt/server1/.venv/bin/python3 /opt/server1/app.py|APP_PATH=path/,PORT=1234,TOKEN=xxxx'
     'https://github.com/xxx/server2.git|/opt/server2|server2|1235|server2|/opt/server2/.venv/bin/python3 /opt/server2/app.py|XXX=XXX,XXX=xxxx,XXX=XXX'
     'https://github.com/xxx/server3.git|/opt/server3|server3|1236|server3|/opt/server3/.venv/bin/python3 /opt/server3/app.py'
+    'https://github.com/atmos/camo.git|/opt/camo|camo|8081|camo|/usr/bin/env PORT=8081 CAMO_KEY=0x24FEEDFACEDEADBEEFCAFE CAMO_KEEP_ALIVE=false /usr/bin/node /opt/camo/server.js'
 )
 
 MAIN_DOMAIN="$(basename "$0" .sh)"
@@ -198,6 +199,31 @@ echo; echo "$NAME.service restarted"
 EOF
         chmod 700 "$DIR/upgrade.sh"
         echo; echo "upgrade.sh created for $NAME"; echo;
+
+    elif [[ "$CMD" == *.js ]]; then
+        cd "$DIR"
+        npm install || true
+        echo; echo "Node.js dependencies installed"
+
+        cat > "$DIR/upgrade.sh" <<EOF
+#!/bin/bash
+
+if [ "\$EUID" -ne 0 ]; then
+    echo; echo "Please run as root"
+    exit 1
+fi
+
+cd "$DIR"
+git fetch --all
+git reset --hard origin/main
+npm install
+echo; echo "$NAME upgraded"
+systemctl daemon-reload
+systemctl restart $NAME
+echo; echo "$NAME.service restarted"
+EOF
+        chmod 700 "$DIR/upgrade.sh"
+        echo; echo "upgrade.sh created for $NAME"; echo;
     fi
 
     cat > "/etc/systemd/system/$NAME.service" <<EOF
@@ -240,10 +266,12 @@ echo ""
 
 # Install packages
 apt update
-apt install -y nginx certbot python3-certbot-nginx git python3-venv python3-pip
+apt install -y nginx certbot python3-certbot-nginx git python3-venv python3-pip curl
+curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+apt install -y nodejs
 systemctl enable nginx
 systemctl start nginx
-echo; echo "Nginx, Certbot, Git, Python venv installed"
+echo; echo "Nginx, Certbot, Git, Python venv, Node.js and npm installed"
 
 # Detect CSV file path based on script name
 CSV_FILE="$(dirname "$0")/$MAIN_DOMAIN.csv"
